@@ -1,0 +1,15 @@
+{
+  "name": "Calculadora IMC Pro",
+  "short_name": "IMC Pro",
+  "start_url": "app.index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a73e8",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
