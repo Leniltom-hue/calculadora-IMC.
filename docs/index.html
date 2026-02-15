@@ -1,50 +1,524 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+<!doctype html>
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora IMC Pro</title>
-    <link rel="manifest" href="manifest.json">
-    <style>
-        body { font-family: sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 20px; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 350px; text-align: center; }
-        h2 { color: #1a73e8; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
-        #resultado { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; line-height: 1.5; }
-        .normal { background: #e6fffa; color: #2d6a4f; border: 1px solid #b2f5ea; }
-        .alerta { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; }
-    </style>
-</head>
-<body>
-    <div class="card">
-        <h2>Calculadora IMC</h2>
-        <input type="number" id="peso" placeholder="Peso (ex: 70)">
-        <input type="number" id="altura" step="0.01" placeholder="Altura (ex: 1.75)">
-        <button onclick="calcular()">Calcular Saúde</button>
-        <div id="resultado"></div>
-    </div>
-    <script>
-    function calcular() {
-        const peso = document.getElementById('peso').value;
-        const altura = document.getElementById('altura').value;
-        const resDiv = document.getElementById('resultado');
-        if(peso && altura) {
-            const imc = (peso / (altura * altura)).toFixed(2);
-            let msg = ""; let classe = "normal";
-            if (imc < 18.5) { msg = "⚠️ Abaixo do peso: Procure um nutricionista."; classe = "alerta"; }
-            else if (imc < 25) { msg = "✅ Peso Normal: Parabéns!"; }
-            else if (imc < 30) { msg = "⚠️ Sobrepeso: Atenção aos hábitos."; classe = "alerta"; }
-            else { msg = "🚨 Obesidade: Cuide da sua saúde."; classe = "alerta"; }
-            resDiv.style.display = "block";
-            resDiv.className = classe;
-            resDiv.innerHTML = `<strong>Seu IMC: ${imc}</strong><br>${msg}`;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora IMC</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#0b5cff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="./icon.png">
+  <link rel="icon" href="./icon.png">
+
+  <style>
+    :root{
+      --bg:#f4f7ff; --card:#ffffff; --text:#0f172a; --muted:#475569;
+      --primary:#0b5cff; --border:#e2e8f0; --shadow: 0 10px 25px rgba(2, 6, 23, .08);
     }
-   // Registro do Service Worker
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./service-worker.js"); 
-  }
-</script>
+    [data-theme="dark"]{
+      --bg:#0b1220; --card:#0f1b33; --text:#e5e7eb; --muted:#a5b4fc;
+      --primary:#3b82f6; --border:rgba(226,232,240,.15); --shadow: 0 10px 25px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 10% 10%, rgba(11,92,255,.15), transparent),
+                  radial-gradient(900px 600px at 90% 30%, rgba(16,185,129,.10), transparent),
+                  var(--bg);
+      color:var(--text);
+      min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+    .wrap{width:min(1040px, 100%); display:grid; grid-template-columns: 1.15fr .85fr; gap:18px;}
+    @media (max-width: 900px){ .wrap{grid-template-columns:1fr} }
+    .card{background:var(--card); border:1px solid var(--border); border-radius:18px; box-shadow:var(--shadow); padding:18px;}
+    .top{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px;}
+    .title{display:flex; align-items:center; gap:10px;}
+    .logo{width:42px;height:42px; border-radius:12px; background: linear-gradient(135deg, var(--primary), rgba(11,92,255,.35));
+      display:grid;place-items:center; color:white; font-weight:900;}
+    h1{font-size:18px;margin:0}
+    .sub{margin:2px 0 0;color:var(--muted);font-size:13px}
+
+    .btn{border:none; background:var(--primary); color:white; padding:10px 12px; border-radius:12px; font-weight:800; cursor:pointer;}
+    .btn:active{transform:translateY(1px)}
+    .btn.secondary{background:transparent; color:var(--text); border:1px solid var(--border);}
+
+    .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;}
+    @media (max-width: 560px){ .grid{grid-template-columns:1fr} }
+    label{display:block; font-size:13px; color:var(--muted); margin:0 0 6px; font-weight:700;}
+    input, select{
+      width:100%; padding:12px; border-radius:12px; border:1px solid var(--border);
+      background:transparent; color:var(--text); outline:none; font-size:15px;
+    }
+
+    .actions{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;}
+
+    .result{margin-top:14px; padding:14px; border-radius:14px; border:1px solid var(--border); background:rgba(148,163,184,.10);}
+    .big{font-size:34px; margin:0; font-weight:950; letter-spacing:-.5px;}
+    .pill{display:inline-flex; gap:8px; align-items:center; padding:8px 10px; border-radius:999px;
+      font-weight:900; margin-top:6px; border:1px solid var(--border); background:rgba(255,255,255,.08);}
+    .muted{color:var(--muted); font-size:13px; margin:10px 0 0}
+
+    .bar{margin-top:12px; height:14px; border-radius:999px; overflow:hidden; display:flex; border:1px solid var(--border);
+      background:rgba(2,6,23,.06); position:relative;}
+    .seg{height:100%}
+    .seg.s1{width:18.5%; background:#60a5fa}
+    .seg.s2{width:6.5%; background:#22c55e}
+    .seg.s3{width:5%; background:#f59e0b}
+    .seg.s4{width:10%; background:#fb7185}
+    .seg.s5{width:60%; background:#ef4444}
+    .marker{position:absolute; top:-8px; width:0;height:0; border-left:7px solid transparent; border-right:7px solid transparent;
+      border-bottom:10px solid var(--text); transform:translateX(-7px);}
+    .markerLine{position:absolute; top:0; width:2px;height:100%; background:var(--text); opacity:.8; transform:translateX(-1px);}
+
+    .sectionTitle{margin-top:14px; font-size:14px; font-weight:900;}
+    .mini{font-size:12px; color:var(--muted); margin-top:6px; line-height:1.35}
+
+    .history{margin-top:10px; display:flex; flex-direction:column; gap:10px; max-height:520px; overflow:auto; padding-right:4px;}
+    .row{border:1px solid var(--border); background:rgba(148,163,184,.08); border-radius:14px; padding:12px;
+      display:flex; justify-content:space-between; gap:12px; align-items:flex-start;}
+    .row b{font-size:14px}
+    .row small{display:block; color:var(--muted); margin-top:2px}
+    .tag{font-weight:950; border-radius:999px; padding:6px 10px; border:1px solid var(--border); white-space:nowrap;}
+
+    .chartBox{margin-top:10px; border:1px solid var(--border); border-radius:14px; padding:12px; background:rgba(148,163,184,.08);}
+    canvas{width:100%; height:170px; display:block;}
+
+    .footerNote{margin-top:10px; font-size:12px; color:var(--muted); line-height:1.35;}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <!-- Card principal -->
+    <section class="card">
+      <div class="top">
+        <div class="title">
+          <div class="logo">IMC</div>
+          <div>
+            <h1>Calculadora IMC PRO</h1>
+            <div class="sub">Instalável (Android • iOS • PC) • IMC + Calorias + Histórico</div>
+          </div>
+        </div>
+        <button class="btn secondary" id="themeBtn" type="button">🌙 Modo</button>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label for="peso">Peso (kg)</label>
+          <input id="peso" type="number" inputmode="decimal" step="0.1" placeholder="Ex: 70" />
+        </div>
+
+        <div>
+          <label for="altura">Altura (cm ou m)</label>
+          <input id="altura" type="number" inputmode="decimal" step="0.01" placeholder="Ex: 175 ou 1.75" />
+        </div>
+
+        <div>
+          <label for="sexo">Sexo (para calorias)</label>
+          <select id="sexo">
+            <option value="">Selecione</option>
+            <option value="M">Homem</option>
+            <option value="F">Mulher</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="idade">Idade (para calorias)</label>
+          <input id="idade" type="number" inputmode="numeric" step="1" min="1" max="120" placeholder="Ex: 26" />
+        </div>
+
+        <div>
+          <label for="atividade">Nível de atividade</label>
+          <select id="atividade">
+            <option value="1.2">Sedentário (quase nada)</option>
+            <option value="1.375">Leve (1–3x/sem)</option>
+            <option value="1.55">Moderado (3–5x/sem)</option>
+            <option value="1.725">Ativo (6–7x/sem)</option>
+            <option value="1.9">Muito ativo (trabalho pesado)</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="objetivo">Objetivo</label>
+          <select id="objetivo">
+            <option value="manter">Manter</option>
+            <option value="emagrecer">Emagrecer</option>
+            <option value="ganhar">Ganhar massa</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" type="button" id="calcBtn">Calcular</button>
+        <button class="btn secondary" type="button" id="shareBtn">Compartilhar</button>
+        <button class="btn secondary" type="button" id="clearBtn">Limpar</button>
+      </div>
+
+      <div class="result" id="result" style="display:none;">
+        <p class="big" id="imcBig">0.00</p>
+        <div class="pill" id="classPill">—</div>
+
+        <div class="bar" aria-label="Barra do IMC">
+          <div class="seg s1"></div>
+          <div class="seg s2"></div>
+          <div class="seg s3"></div>
+          <div class="seg s4"></div>
+          <div class="seg s5"></div>
+          <div class="marker" id="marker"></div>
+          <div class="markerLine" id="markerLine"></div>
+        </div>
+
+        <p class="muted" id="idealText"></p>
+
+        <div class="sectionTitle">Calorias diárias (estimativa)</div>
+        <p class="mini" id="calText"></p>
+
+        <div class="footerNote">
+          * IMC e calorias são estimativas. Para orientação personalizada, consulte um profissional de saúde.
+        </div>
+      </div>
+    </section>
+
+    <!-- Card do histórico -->
+    <aside class="card">
+      <div class="top">
+        <div>
+          <h1>Histórico</h1>
+          <div class="sub">Fica salvo neste aparelho (até 20 registros)</div>
+        </div>
+        <button class="btn secondary" type="button" id="clearHistoryBtn">🗑️ Limpar</button>
+      </div>
+
+      <div class="chartBox">
+        <div class="sub" style="margin:0 0 8px;">Evolução do IMC</div>
+        <canvas id="chart" width="900" height="260"></canvas>
+      </div>
+
+      <div class="history" id="history"></div>
+
+      <div class="footerNote">
+        Dica: no iPhone use Safari → Compartilhar → “Adicionar à Tela de Início”.
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const els = {
+      peso: document.getElementById("peso"),
+      altura: document.getElementById("altura"),
+      sexo: document.getElementById("sexo"),
+      idade: document.getElementById("idade"),
+      atividade: document.getElementById("atividade"),
+      objetivo: document.getElementById("objetivo"),
+      calcBtn: document.getElementById("calcBtn"),
+      clearBtn: document.getElementById("clearBtn"),
+      shareBtn: document.getElementById("shareBtn"),
+      result: document.getElementById("result"),
+      imcBig: document.getElementById("imcBig"),
+      classPill: document.getElementById("classPill"),
+      idealText: document.getElementById("idealText"),
+      calText: document.getElementById("calText"),
+      history: document.getElementById("history"),
+      clearHistoryBtn: document.getElementById("clearHistoryBtn"),
+      marker: document.getElementById("marker"),
+      markerLine: document.getElementById("markerLine"),
+      themeBtn: document.getElementById("themeBtn"),
+      chart: document.getElementById("chart")
+    };
+
+    const LS_KEY = "imc_history_v2";
+    const LS_THEME = "imc_theme_v1";
+
+    function toMeters(h) {
+      if (!isFinite(h) || h <= 0) return null;
+      if (h > 10) return h / 100; // cm
+      return h;                   // m
+    }
+
+    function classify(imc) {
+      if (imc < 18.5) return { label: "Abaixo do peso", tag:"warn" };
+      if (imc < 25)   return { label: "Peso normal",   tag:"good" };
+      if (imc < 30)   return { label: "Sobrepeso",     tag:"warn" };
+      if (imc < 35)   return { label: "Obesidade I",   tag:"bad" };
+      if (imc < 40)   return { label: "Obesidade II",  tag:"bad" };
+      return           { label: "Obesidade III", tag:"bad" };
+    }
+
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    function markerPosition(imc){
+      const x = clamp(imc, 10, 50);
+      return ((x - 10) / (50 - 10)) * 100;
+    }
+
+    function idealWeightRange(alturaM){
+      const min = 18.5 * alturaM * alturaM;
+      const max = 24.9 * alturaM * alturaM;
+      return {min, max};
+    }
+
+    // --- Calorias (Mifflin-St Jeor) ---
+    function tmbMifflin({peso, alturaCm, idade, sexo}){
+      if (sexo === "M") return (10*peso) + (6.25*alturaCm) - (5*idade) + 5;
+      if (sexo === "F") return (10*peso) + (6.25*alturaCm) - (5*idade) - 161;
+      return null;
+    }
+
+    function goalCalories(tdee, objetivo){
+      if (!isFinite(tdee)) return null;
+      if (objetivo === "emagrecer") return tdee - 400; // déficit leve/moderado
+      if (objetivo === "ganhar")    return tdee + 300; // superávit leve
+      return tdee; // manter
+    }
+
+    function loadHistory(){
+      try { return JSON.parse(localStorage.getItem(LS_KEY) || "[]"); }
+      catch { return []; }
+    }
+    function saveHistory(items){
+      localStorage.setItem(LS_KEY, JSON.stringify(items.slice(0, 20)));
+    }
+
+    function renderHistory(){
+      const items = loadHistory();
+      if (!items.length){
+        els.history.innerHTML = `<div class="muted">Nenhum cálculo ainda. Faça o primeiro 😉</div>`;
+        drawChart([]);
+        return;
+      }
+      els.history.innerHTML = items.map(it => {
+        const tagClass = it.tag === "good" ? "good" : (it.tag === "warn" ? "warn" : "bad");
+        return `
+          <div class="row">
+            <div>
+              <b>IMC ${it.imc}</b>
+              <small>${it.label}</small>
+              <small>${it.date}</small>
+            </div>
+            <div class="tag ${tagClass}">${it.label}</div>
+          </div>
+        `;
+      }).join("");
+
+      drawChart(items.slice().reverse()); // do mais antigo para o mais novo
+    }
+
+    function clearInputs(){
+      els.peso.value = "";
+      els.altura.value = "";
+      els.sexo.value = "";
+      els.idade.value = "";
+      els.result.style.display = "none";
+    }
+
+    function calculate(){
+      const peso = parseFloat(els.peso.value);
+      const alturaRaw = parseFloat(els.altura.value);
+      const alturaM = toMeters(alturaRaw);
+
+      if (!isFinite(peso) || peso <= 0 || !alturaM || alturaM <= 0){
+        alert("Preencha peso e altura corretamente. Ex: 70 e 1.75 (ou 175).");
+        return;
+      }
+
+      const imc = peso / (alturaM * alturaM);
+      const imcFixed = imc.toFixed(2);
+
+      const c = classify(imc);
+      els.imcBig.textContent = imcFixed;
+      els.classPill.className = "pill";
+      els.classPill.innerHTML = `📌 Classificação: <b>${c.label}</b>`;
+
+      // peso ideal
+      const ideal = idealWeightRange(alturaM);
+      els.idealText.innerHTML =
+        `Faixa de <b>peso ideal</b> (IMC normal): <b>${ideal.min.toFixed(1)} kg</b> até <b>${ideal.max.toFixed(1)} kg</b>.`;
+
+      // barra
+      const pct = markerPosition(imc);
+      els.marker.style.left = pct + "%";
+      els.markerLine.style.left = pct + "%";
+
+      // calorias (se tiver dados)
+      const idade = parseInt(els.idade.value || "0", 10);
+      const sexo = els.sexo.value;
+      const alturaCm = Math.round(alturaM * 100);
+      const mult = parseFloat(els.atividade.value);
+      const objetivo = els.objetivo.value;
+
+      let calMsg = "Preencha <b>sexo</b> e <b>idade</b> para ver calorias estimadas.";
+      const tmb = tmbMifflin({peso, alturaCm, idade, sexo});
+      if (tmb && idade > 0){
+        const tdee = tmb * mult; // manutenção
+        const meta = goalCalories(tdee, objetivo);
+
+        calMsg = `
+          <b>TMB:</b> ${Math.round(tmb)} kcal/dia<br>
+          <b>Manutenção:</b> ${Math.round(tdee)} kcal/dia<br>
+          <b>Meta (${objetivo}):</b> ${Math.round(meta)} kcal/dia
+        `;
+      }
+      els.calText.innerHTML = calMsg;
+
+      els.result.style.display = "block";
+
+      // histórico
+      const now = new Date();
+      const date = now.toLocaleString("pt-BR", { dateStyle:"short", timeStyle:"short" });
+
+      const items = loadHistory();
+      items.unshift({
+        imc: imcFixed,
+        label: c.label,
+        tag: c.tag,
+        date
+      });
+      saveHistory(items);
+      renderHistory();
+    }
+
+    // --- Compartilhar ---
+    async function shareResult(){
+      if (els.result.style.display === "none"){
+        alert("Faça um cálculo primeiro para compartilhar.");
+        return;
+      }
+      const imc = els.imcBig.textContent;
+      const cls = els.classPill.textContent.replace("📌 Classificação:", "").trim();
+      const text = `Meu resultado na Calculadora IMC:\nIMC: ${imc}\nClassificação: ${cls}\n\nAcesse: ${location.href}`;
+
+      try{
+        if (navigator.share){
+          await navigator.share({ title: "Calculadora IMC", text, url: location.href });
+          return;
+        }
+      }catch(e){ /* usuário cancelou ou não suportado */ }
+
+      try{
+        await navigator.clipboard.writeText(text);
+        alert("Copiado! Agora é só colar no WhatsApp/Instagram.");
+      }catch(e){
+        prompt("Copie o texto abaixo:", text);
+      }
+    }
+
+    // --- Tema ---
+    function applyTheme(theme){
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem(LS_THEME, theme);
+      els.themeBtn.textContent = theme === "dark" ? "☀️ Modo" : "🌙 Modo";
+    }
+    function toggleTheme(){
+      const current = localStorage.getItem(LS_THEME) || "";
+      applyTheme(current === "dark" ? "light" : "dark");
+    }
+
+    // --- Gráfico (Canvas) ---
+    function drawChart(items){
+      const c = els.chart;
+      const ctx = c.getContext("2d");
+      const w = c.width, h = c.height;
+
+      ctx.clearRect(0,0,w,h);
+
+      // fundo
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "rgba(148,163,184,0.15)";
+      ctx.fillRect(0,0,w,h);
+
+      // se não tem dados
+      if (!items.length){
+        ctx.fillStyle = "rgba(100,116,139,0.9)";
+        ctx.font = "bold 22px system-ui";
+        ctx.fillText("Sem dados ainda", 28, 55);
+        return;
+      }
+
+      const vals = items.map(x => parseFloat(x.imc)).filter(v => isFinite(v));
+      const min = Math.min(...vals, 16);
+      const max = Math.max(...vals, 30);
+      const pad = 40;
+      const left = 50, right = 20, top = 20, bottom = 35;
+      const x0 = left, y0 = h - bottom, x1 = w - right, y1 = top;
+
+      // eixos
+      ctx.strokeStyle = "rgba(100,116,139,0.7)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x0, y1);
+      ctx.lineTo(x0, y0);
+      ctx.lineTo(x1, y0);
+      ctx.stroke();
+
+      // grade
+      ctx.strokeStyle = "rgba(100,116,139,0.25)";
+      ctx.lineWidth = 1;
+      for (let i=1;i<=4;i++){
+        const yy = y1 + (i*(y0-y1)/5);
+        ctx.beginPath(); ctx.moveTo(x0, yy); ctx.lineTo(x1, yy); ctx.stroke();
+      }
+
+      const n = vals.length;
+      const dx = (x1 - x0) / Math.max(1, n-1);
+      const mapY = (v) => {
+        const t = (v - min) / (max - min + 0.0001);
+        return y0 - t*(y0-y1);
+      };
+
+      // linha
+      ctx.strokeStyle = "rgba(11,92,255,0.95)";
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      vals.forEach((v,i)=>{
+        const x = x0 + i*dx;
+        const y = mapY(v);
+        if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      });
+      ctx.stroke();
+
+      // pontos
+      ctx.fillStyle = "rgba(11,92,255,0.95)";
+      vals.forEach((v,i)=>{
+        const x = x0 + i*dx;
+        const y = mapY(v);
+        ctx.beginPath(); ctx.arc(x,y,6,0,Math.PI*2); ctx.fill();
+      });
+
+      // labels min/max
+      ctx.fillStyle = "rgba(15,23,42,0.9)";
+      ctx.font = "bold 18px system-ui";
+      ctx.fillText("IMC", 16, 26);
+    }
+
+    // Eventos
+    els.calcBtn.addEventListener("click", calculate);
+    els.clearBtn.addEventListener("click", clearInputs);
+    els.shareBtn.addEventListener("click", shareResult);
+    els.clearHistoryBtn.addEventListener("click", () => {
+      localStorage.removeItem(LS_KEY);
+      renderHistory();
+    });
+    els.themeBtn.addEventListener("click", toggleTheme);
+
+    // Enter para calcular
+    [els.peso, els.altura, els.idade].forEach(inp => {
+      inp.addEventListener("keydown", (e) => { if (e.key === "Enter") calculate(); });
+    });
+
+    // Inicial
+    (function init(){
+      renderHistory();
+      const saved = localStorage.getItem(LS_THEME);
+      applyTheme(saved === "dark" ? "dark" : "light");
+    })();
+
+    // PWA Service Worker
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./service-worker.js");
+    }
+  </script>
 </body>
 </html>
