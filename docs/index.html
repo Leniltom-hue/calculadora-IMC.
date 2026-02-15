@@ -41,10 +41,9 @@
             resDiv.innerHTML = `<strong>Seu IMC: ${imc}</strong><br>${msg}`;
         }
     }
-    </script>
+   // Registro do Service Worker
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./service-worker.js")
-      .then(() => console.log("Service Worker registrado"));
+    navigator.serviceWorker.register("./service-worker.js"); 
   }
 </script>
 </body>
