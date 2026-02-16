@@ -1,50 +1,73 @@
-const CACHE_NAME = "imc-cache"; // pode ficar fixo
+// Troque o número quando quiser forçar atualização imediata
+const CACHE_VERSION = "v1";
+const CACHE_NAME = `imc-cache-${CACHE_VERSION}`;
+
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./icon.png"
+  "./icon.png",
+  "./privacy.html",
+  "./terms.html",
+  "./about.html"
 ];
 
-// Instala: apaga o cache antigo e baixa tudo de novo (sempre a versão mais recente)
+// Instala: baixa os arquivos principais
 self.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {
-      await caches.delete(CACHE_NAME);
       const cache = await caches.open(CACHE_NAME);
       await cache.addAll(ASSETS);
-      self.skipWaiting(); // ativa mais rápido
+      self.skipWaiting();
     })()
   );
 });
 
-// Ativa e assume as abas abertas
+// Ativa: apaga caches antigos e assume as abas abertas
 self.addEventListener("activate", (event) => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    (async () => {
+      const keys = await caches.keys();
+      await Promise.all(
+        keys
+          .filter((k) => k.startsWith("imc-cache-") && k !== CACHE_NAME)
+          .map((k) => caches.delete(k))
+      );
+      await self.clients.claim();
+    })()
+  );
 });
 
-// Estratégia: tenta cache primeiro, mas atualiza em segundo plano
+// Estratégia: cache-first com atualização em segundo plano (stale-while-revalidate)
 self.addEventListener("fetch", (event) => {
+  // Só intercepta GET
+  if (event.request.method !== "GET") return;
+
+  // Evita problemas com requests que o cache não aceita (alguns cross-origin)
+  const url = new URL(event.request.url);
+  const sameOrigin = url.origin === self.location.origin;
+
   event.respondWith(
     (async () => {
       const cache = await caches.open(CACHE_NAME);
       const cached = await cache.match(event.request);
 
-      const networkFetch = fetch(event.request)
+      const fetchAndUpdate = fetch(event.request)
         .then((resp) => {
-          // salva a versão nova no cache
-          cache.put(event.request, resp.clone());
+          // só guarda no cache se for do mesmo domínio e resposta OK
+          if (sameOrigin && resp && resp.status === 200) {
+            cache.put(event.request, resp.clone());
+          }
           return resp;
         })
         .catch(() => cached);
 
-      // devolve rápido do cache, e atualiza em background
-      return cached || networkFetch;
+      return cached || fetchAndUpdate;
     })()
   );
 });
 
-// Recebe comando da página para atualizar na hora
+// Comando vindo da página para ativar a nova versão na hora
 self.addEventListener("message", (event) => {
   if (event.data === "SKIP_WAITING") self.skipWaiting();
 });
