@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -175,6 +176,18 @@
     }
     .footerLinks a{color:var(--primary); text-decoration:none; font-weight:800}
     .footerLinks a:hover{text-decoration:underline}
+    /* Footer LP FIT TECH responsivo */
+#lpFooter{
+  width:100%;
+  margin-top:18px;
+  text-align:center;
+}
+
+@media (max-width: 900px){
+  #lpFooter{
+    grid-column: 1 / -1;
+  }
+}
   </style>
 </head>
 
