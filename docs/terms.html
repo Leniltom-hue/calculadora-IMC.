@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Termos de Uso • Calculadora Fitness PRO</title>
+  <meta name="theme-color" content="#0b5cff" />
+  <style>
+    :root{--bg:#f4f7ff;--card:#fff;--text:#0f172a;--muted:#475569;--primary:#0b5cff;--border:#e2e8f0;--shadow:0 10px 25px rgba(2,6,23,.08)}
+    [data-theme="dark"]{--bg:#0b1220;--card:#0f1b33;--text:#e5e7eb;--muted:#a5b4fc;--primary:#3b82f6;--border:rgba(226,232,240,.15);--shadow:0 10px 25px rgba(0,0,0,.35)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(1200px 800px at 10% 10%, rgba(11,92,255,.15), transparent),radial-gradient(900px 600px at 90% 30%, rgba(16,185,129,.10), transparent),var(--bg);color:var(--text);min-height:100vh;padding:18px;display:flex;justify-content:center}
+    .wrap{width:min(900px,100%)}
+    .top{display:flex;gap:10px;align-items:center;justify-content:space-between;margin:10px 0 14px;flex-wrap:wrap}
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--primary),rgba(11,92,255,.35));display:grid;place-items:center;color:#fff;font-weight:950;box-shadow:var(--shadow)}
+    .btn{border:none;background:var(--primary);color:#fff;padding:10px 12px;border-radius:12px;font-weight:900;cursor:pointer}
+    .btn.secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:16px}
+    h1{font-size:20px;margin:0}
+    h2{font-size:16px;margin:18px 0 8px}
+    p,li{color:var(--muted);line-height:1.5}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="logo">IMC</div>
+        <div>
+          <div style="font-weight:950">Calculadora Fitness PRO</div>
+          <div style="color:var(--muted); font-size:13px;">Termos de Uso</div>
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn secondary" id="themeBtn" type="button">🌙 Modo</button>
+        <a class="btn secondary" href="./index.html" style="text-decoration:none;">⬅ Voltar</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h1>Termos de Uso</h1>
+      <p>Ao usar este app, você concorda com estes termos.</p>
+
+      <h2>1) Finalidade</h2>
+      <p>O app fornece <b>estimativas</b> (IMC, calorias, treinos e metas) para ajudar na organização pessoal.</p>
+
+      <h2>2) Aviso importante</h2>
+      <p>O app <b>não substitui</b> orientação médica, nutricional ou de educação física. Se tiver dor, lesão ou condição de saúde, procure um profissional.</p>
+
+      <h2>3) Responsabilidade do usuário</h2>
+      <ul>
+        <li>Você é responsável por como utiliza as informações.</li>
+        <li>Você deve treinar com segurança e respeitar seus limites.</li>
+      </ul>
+
+      <h2>4) Alterações</h2>
+      <p>Os recursos podem mudar com o tempo, incluindo atualizações e novos módulos.</p>
+
+      <h2>5) Contato</h2>
+      <p>Suporte/contato: <b>SEU_EMAIL_AQUI</b></p>
+    </div>
+  </div>
+
+  <script>
+    function applyTheme(theme){
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem("imc_theme_v1", theme);
+      document.getElementById("themeBtn").textContent = theme === "dark" ? "☀️ Modo" : "🌙 Modo";
+    }
+    function toggleTheme(){
+      const current = localStorage.getItem("imc_theme_v1") || "";
+      applyTheme(current === "dark" ? "light" : "dark");
+    }
+    document.getElementById("themeBtn").addEventListener("click", toggleTheme);
+    applyTheme((localStorage.getItem("imc_theme_v1")==="dark") ? "dark" : "light");
+  </script>
+</body>
+</html>
