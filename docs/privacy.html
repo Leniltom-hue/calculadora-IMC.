@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Política de Privacidade • Calculadora Fitness PRO</title>
+  <meta name="theme-color" content="#0b5cff" />
+
+  <style>
+    :root{
+      --bg:#f4f7ff; --card:#ffffff; --text:#0f172a; --muted:#475569;
+      --primary:#0b5cff; --border:#e2e8f0; --shadow: 0 10px 25px rgba(2, 6, 23, .08);
+    }
+    [data-theme="dark"]{
+      --bg:#0b1220; --card:#0f1b33; --text:#e5e7eb; --muted:#a5b4fc;
+      --primary:#3b82f6; --border:rgba(226,232,240,.15); --shadow: 0 10px 25px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 10% 10%, rgba(11,92,255,.15), transparent),
+                  radial-gradient(900px 600px at 90% 30%, rgba(16,185,129,.10), transparent),
+                  var(--bg);
+      color:var(--text); min-height:100vh; padding:18px;
+      display:flex; justify-content:center;
+    }
+    .wrap{width:min(900px,100%);}
+    .top{display:flex; gap:10px; align-items:center; justify-content:space-between; margin:10px 0 14px;}
+    .brand{display:flex; gap:10px; align-items:center;}
+    .logo{
+      width:44px;height:44px;border-radius:14px;
+      background: linear-gradient(135deg, var(--primary), rgba(11,92,255,.35));
+      display:grid;place-items:center; color:white; font-weight:950;
+      box-shadow:var(--shadow);
+    }
+    .btn{border:none; background:var(--primary); color:white; padding:10px 12px; border-radius:12px; font-weight:900; cursor:pointer;}
+    .btn.secondary{background:transparent; color:var(--text); border:1px solid var(--border);}
+    .card{background:var(--card); border:1px solid var(--border); border-radius:18px; box-shadow:var(--shadow); padding:16px;}
+    h1{font-size:20px; margin:0}
+    h2{font-size:16px; margin:18px 0 8px}
+    p,li{color:var(--muted); line-height:1.5}
+    a{color:var(--primary); text-decoration:none; font-weight:800}
+    a:hover{text-decoration:underline}
+    .foot{margin-top:14px; color:var(--muted); font-size:12px}
+    .row{display:flex; gap:10px; flex-wrap:wrap}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="logo">IMC</div>
+        <div>
+          <div style="font-weight:950">Calculadora Fitness PRO</div>
+          <div style="color:var(--muted); font-size:13px;">Política de Privacidade</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <button class="btn secondary" type="button" id="themeBtn">🌙 Modo</button>
+        <a class="btn secondary" href="./index.html">⬅ Voltar</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h1>Política de Privacidade</h1>
+      <p>Última atualização: <b><span id="date"></span></b></p>
+
+      <h2>1) Coleta de dados</h2>
+      <p>Este app <b>não coleta</b> dados pessoais e <b>não envia</b> informações para servidores externos.</p>
+
+      <h2>2) Armazenamento no dispositivo</h2>
+      <p>Algumas informações podem ser salvas <b>somente no seu aparelho</b> para funcionar corretamente (ex.: histórico de IMC, metas, treinos). Isso é feito via armazenamento local do navegador (<b>localStorage</b>).</p>
+
+      <h2>3) Compartilhamento</h2>
+      <p>Se você usar a função de compartilhar, o app monta um texto com seu resultado para você enviar onde quiser. Você controla para quem envia.</p>
+
+      <h2>4) Cookies e rastreamento</h2>
+      <p>O app não utiliza cookies de rastreamento e não faz anúncios por conta própria (a não ser que você adicione isso no futuro).</p>
+
+      <h2>5) Contato</h2>
+      <p>Se quiser falar com o desenvolvedor, use: <b>SEU_EMAIL_AQUI</b></p>
+
+      <div class="foot">
+        * Esta política pode ser atualizada para incluir login, IA, assinaturas ou recursos sociais no futuro.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // data simples
+    const d = new Date();
+    document.getElementById("date").textContent =
+      d.toLocaleDateString("pt-BR");
+
+    // tema igual do app
+    function applyTheme(theme){
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem("imc_theme_v1", theme);
+      document.getElementById("themeBtn").textContent = theme === "dark" ? "☀️ Modo" : "🌙 Modo";
+    }
+    function toggleTheme(){
+      const current = localStorage.getItem("imc_theme_v1") || "";
+      applyTheme(current === "dark" ? "light" : "dark");
+    }
+    document.getElementById("themeBtn").addEventListener("click", toggleTheme);
+    applyTheme((localStorage.getItem("imc_theme_v1")==="dark") ? "dark" : "light");
+  </script>
+</body>
+</html>
