@@ -1,203 +1,205 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>LP FIT TECH</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LP FIT TECH</title>
 
-  <link rel="manifest" href="./manifest.json">
-  <meta name="theme-color" content="#0b5cff">
-  <link rel="icon" href="./icon.png">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#0b5cff">
+<link rel="icon" href="./icon.png">
 
-  <style>
-    :root{
-      --bg:#f4f7ff;
-      --card:#ffffff;
-      --text:#0f172a;
-      --muted:#475569;
-      --primary:#0b5cff;
-      --border:#e2e8f0;
-      --shadow:0 10px 25px rgba(2,6,23,.08);
-    }
+<style>
+:root{
+  --bg:#f4f7ff;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:#475569;
+  --primary:#0b5cff;
+  --border:#e2e8f0;
+  --shadow:0 10px 25px rgba(2,6,23,.08);
+}
 
-    *{box-sizing:border-box}
+*{box-sizing:border-box}
 
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      padding:16px;
-    }
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  padding:16px;
+}
 
-    .app{
-      width:100%;
-      max-width:1100px;
-      margin:0 auto;
-    }
+.app{
+  width:100%;
+  max-width:1100px;
+  margin:auto;
+}
 
-    .header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:16px;
-    }
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:16px;
+}
 
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
+.logo{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  background:linear-gradient(135deg,var(--primary),rgba(11,92,255,.35));
+  display:grid;
+  place-items:center;
+  color:white;
+  font-weight:950;
+}
 
-    .logo{
-      width:44px;
-      height:44px;
-      border-radius:14px;
-      background:linear-gradient(135deg,var(--primary),rgba(11,92,255,.35));
-      display:grid;
-      place-items:center;
-      color:white;
-      font-weight:950;
-      box-shadow:var(--shadow);
-      flex:0 0 auto;
-    }
+h1{font-size:18px;margin:0}
 
-    h1{font-size:18px;margin:0}
-    .sub{font-size:13px;color:var(--muted);margin-top:2px}
+.sub{font-size:13px;color:var(--muted)}
 
-    .cards{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:16px;
-    }
+.cards{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
 
-    @media (max-width:900px){
-      .cards{grid-template-columns:1fr}
-    }
+@media (max-width:900px){
+  .cards{grid-template-columns:1fr}
+}
 
-    .card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:16px;
-      box-shadow:var(--shadow);
-      min-width:0; /* evita cortes/overflow em mobile */
-    }
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:16px;
+  box-shadow:var(--shadow);
+}
 
-    .cardTitle{
-      font-weight:950;
-      margin:0 0 10px 0;
-    }
+.cardTitle{
+  font-weight:950;
+  margin-bottom:10px;
+}
 
-    .footerLinks{
-      text-align:center;
-      margin-top:14px;
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      flex-wrap:wrap;
-    }
+.footerLinks{
+  text-align:center;
+  margin-top:14px;
+}
 
-    .footerLinks a{
-      color:var(--primary);
-      text-decoration:none;
-      font-weight:800;
-    }
-    .footerLinks a:hover{ text-decoration:underline; }
+.footerLinks a{
+  color:var(--primary);
+  text-decoration:none;
+  font-weight:800;
+}
 
-    /* FOOTER (fora do grid) */
-    #lpFooter{
-      margin-top:16px;
-    }
+.footerLinks a:hover{
+  text-decoration:underline;
+}
 
-    #lpFooter .lpWrap{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:14px;
-      text-align:center;
-      box-shadow:var(--shadow);
-    }
+/* FOOTER */
+#lpFooter{
+  width:100%;
+  grid-column:1 / -1;
+  margin-top:14px;
+}
 
-    #lpFooter .lpTitle{
-      font-weight:950;
-      font-size:16px;
-      color:var(--primary);
-    }
+#lpFooter .lpWrap{
+  background:#ffffff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:14px;
+  text-align:center;
+  box-shadow:var(--shadow);
+}
 
-    #lpFooter .lpDesc{
-      margin-top:6px;
-      font-weight:800;
-    }
+#lpFooter .lpTitle{
+  font-weight:950;
+  font-size:16px;
+  color:var(--primary);
+}
 
-    #lpFooter .lpLine{
-      margin-top:10px;
-      font-weight:800;
-      color:var(--muted);
-      word-break:break-word; /* evita cortar e-mail em telas pequenas */
-    }
+#lpFooter .lpDesc{
+  margin-top:6px;
+  font-weight:800;
+}
 
-    #lpFooter .lpLink{
-      display:inline-block;
-      margin-top:8px;
-      color:var(--primary);
-      text-decoration:none;
-      font-weight:900;
-    }
-    #lpFooter .lpLink:hover{ text-decoration:underline; }
+#lpFooter .lpLine{
+  margin-top:10px;
+  font-weight:800;
+  color:var(--muted);
+}
 
-    #lpFooter .lpCopy{
-      margin-top:10px;
-      font-size:12px;
-      color:var(--muted);
-    }
-  </style>
+#lpFooter .lpLink{
+  display:inline-block;
+  margin-top:8px;
+  color:var(--primary);
+  text-decoration:none;
+  font-weight:900;
+}
+
+#lpFooter .lpLink:hover{
+  text-decoration:underline;
+}
+
+#lpFooter .lpCopy{
+  margin-top:10px;
+  font-size:12px;
+  color:var(--muted);
+}
+</style>
 </head>
 
 <body>
-  <div class="app">
-    <div class="header">
-      <div class="brand">
-        <div class="logo">IMC</div>
-        <div>
-          <h1>Calculadora Fitness PRO</h1>
-          <div class="sub">IMC • Treino • Cronômetro • Acompanhamento • Metas</div>
-        </div>
-      </div>
+
+<div class="app">
+
+<div class="header">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="logo">IMC</div>
+    <div>
+      <h1>Calculadora Fitness PRO</h1>
+      <div class="sub">IMC • Treino • Cronômetro • Acompanhamento • Metas</div>
     </div>
-
-    <div class="cards">
-      <section class="card">
-        <div class="cardTitle">IMC + Calorias</div>
-        <p>Seu sistema continua aqui normalmente.</p>
-
-        <div class="footerLinks">
-          <a href="privacy.html">Política</a>
-          <span>|</span>
-          <a href="terms.html">Termos</a>
-          <span>|</span>
-          <a href="about.html">Sobre</a>
-        </div>
-      </section>
-
-      <aside class="card">
-        <div class="cardTitle">Histórico</div>
-        <p>Seu histórico continua aqui normalmente.</p>
-      </aside>
-    </div>
-
-    <footer id="lpFooter">
-      <div class="lpWrap">
-        <div class="lpTitle">LP FIT TECH</div>
-        <div class="lpDesc">Tecnologia para sua evolução 💪</div>
-        <div class="lpLine">📧 contato@lpfittech.com</div>
-        <a class="lpLink" href="https://instagram.com/lpfittech" target="_blank" rel="noopener">
-          Instagram
-        </a>
-        <div class="lpCopy">© 2026 LP FIT TECH — Todos os direitos reservados</div>
-      </div>
-    </footer>
   </div>
+</div>
+
+<section>
+<div class="cards">
+
+<section class="card">
+  <div class="cardTitle">IMC + Calorias</div>
+  <p>Seu sistema continua aqui normalmente.</p>
+
+  <div class="footerLinks">
+    <a href="privacy.html">Política</a> |
+    <a href="terms.html">Termos</a> |
+    <a href="about.html">Sobre</a>
+  </div>
+</section>
+
+<aside class="card">
+  <div class="cardTitle">Histórico</div>
+  <p>Seu histórico continua aqui normalmente.</p>
+</aside>
+
+<footer id="lpFooter">
+  <div class="lpWrap">
+    <div class="lpTitle">LP FIT TECH</div>
+    <div class="lpDesc">Tecnologia para sua evolução 💪</div>
+    <div class="lpLine">📧 contato@lpfittech.com</div>
+    <a class="lpLink" href="https://instagram.com/lpfittech" target="_blank">
+      Instagram
+    </a>
+    <div class="lpCopy">
+      © 2026 LP FIT TECH — Todos os direitos reservados
+    </div>
+  </div>
+</footer>
+
+</div>
+</section>
+
+</div>
 </body>
 </html>
