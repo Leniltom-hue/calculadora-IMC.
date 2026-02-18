@@ -1,123 +1,212 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LP FIT TECH - Câmera</title>
-
-<style>
-body{
-  margin:0;
-  background:#111827;
-  color:white;
-  font-family:system-ui;
-  padding:20px;
-}
-.card{
-  max-width:600px;
-  margin:auto;
-}
-video,canvas{
-  width:100%;
-  border-radius:12px;
-  background:black;
-}
-button{
-  margin-top:10px;
-  padding:12px;
-  width:100%;
-  border:none;
-  border-radius:12px;
-  font-weight:900;
-  font-size:16px;
-  cursor:pointer;
-}
-.primary{background:#2563eb;color:white;}
-.secondary{background:#374151;color:white;}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>FOTO FIT</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Arial;margin:0;background:#0b1220;color:#fff}
+    .wrap{max-width:520px;margin:0 auto;padding:14px}
+    h1{font-size:18px;margin:8px 0 12px}
+    .box{background:#111b33;border:1px solid rgba(255,255,255,.12);border-radius:16px;overflow:hidden}
+    video, img{width:100%;display:block;background:#000}
+    .btns{display:grid;gap:10px;margin-top:12px}
+    button{
+      width:100%;padding:14px 12px;border-radius:14px;border:0;
+      font-weight:900;font-size:16px;cursor:pointer
+    }
+    .p{background:#2f6bff;color:#fff}
+    .s{background:#1c2a52;color:#fff;border:1px solid rgba(255,255,255,.12)}
+    .d{background:#3b4256;color:#cdd5ff}
+    .msg{margin-top:10px;font-size:14px;color:#cdd5ff}
+    .small{font-size:12px;opacity:.85;margin-top:6px}
+  </style>
 </head>
-
 <body>
+  <div class="wrap">
+    <h1>📸 FOTO FIT</h1>
 
-<div class="card">
-<h2>📸 FOTO FIT</h2>
+    <div class="box">
+      <video id="cameraPreview" playsinline muted autoplay></video>
+      <img id="resultImg" style="display:none;" alt="Foto pronta">
+    </div>
 
-<video id="video" playsinline autoplay></video>
-<canvas id="canvas" style="display:none;"></canvas>
+    <div class="btns">
+      <button class="p" id="startCamera" type="button">Abrir Câmera</button>
+      <button class="p" id="takePhoto" type="button">Tirar Foto</button>
+      <button class="s" id="saveBtn" type="button" disabled>Salvar / Compartilhar</button>
+      <button class="d" id="retryBtn" type="button" style="display:none;">Tirar outra</button>
+    </div>
 
-<button class="primary" onclick="abrirCamera()">Abrir Câmera</button>
-<button class="primary" onclick="tirarFoto()">Tirar Foto</button>
-<button class="secondary" onclick="baixarFoto()">Baixar</button>
+    <div class="msg" id="status">Abra a câmera e depois clique em Tirar Foto.</div>
+    <div class="small">Obs: No iPhone, “Baixar” direto quase sempre falha. Por isso o botão salva via Compartilhar ✅</div>
 
-<p id="msg"></p>
-</div>
+    <canvas id="photoCanvas" style="display:none;"></canvas>
+  </div>
 
-<script>
-let stream = null;
-let ultimaImagem = null;
+  <script>
+    const video = document.getElementById("cameraPreview");
+    const canvas = document.getElementById("photoCanvas");
+    const img = document.getElementById("resultImg");
 
-async function abrirCamera(){
-  try{
-    stream = await navigator.mediaDevices.getUserMedia({
-      video:{facingMode:{ideal:"environment"}},
-      audio:false
-    });
-    const video = document.getElementById("video");
-    video.srcObject = stream;
-    await video.play();
-    document.getElementById("msg").innerText="Câmera ligada ✅";
-  }catch(e){
-    alert("Permita a câmera no Safari.");
-  }
-}
+    const startBtn = document.getElementById("startCamera");
+    const takeBtn  = document.getElementById("takePhoto");
+    const saveBtn  = document.getElementById("saveBtn");
+    const retryBtn = document.getElementById("retryBtn");
+    const statusEl = document.getElementById("status");
 
-function tirarFoto(){
-  const video = document.getElementById("video");
-  const canvas = document.getElementById("canvas");
+    let stream = null;
+    let lastBlob = null;
 
-  if(!video.srcObject){
-    alert("Abra a câmera primeiro.");
-    return;
-  }
+    function setStatus(t){ statusEl.textContent = t; }
 
-  const w = video.videoWidth;
-  const h = video.videoHeight;
+    async function startCamera(){
+      try{
+        setStatus("Abrindo câmera…");
+        if (stream) {
+          stream.getTracks().forEach(t=>t.stop());
+          stream = null;
+        }
 
-  canvas.width = w;
-  canvas.height = h;
+        const constraints = {
+          video: { facingMode: { ideal: "environment" } },
+          audio: false
+        };
 
-  const ctx = canvas.getContext("2d");
-  ctx.drawImage(video,0,0,w,h);
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = stream;
 
-  // MARCA D'ÁGUA
-  ctx.font="bold 40px Arial";
-  ctx.fillStyle="white";
-  ctx.strokeStyle="black";
-  ctx.lineWidth=3;
+        // iPhone precisa de play() após gesto do usuário
+        await video.play();
 
-  ctx.strokeText("LP FIT TECH",20,50);
-  ctx.fillText("LP FIT TECH",20,50);
+        // esperar o vídeo realmente ficar pronto
+        await new Promise((resolve) => {
+          if (video.readyState >= 2 && video.videoWidth > 0) return resolve();
+          video.onloadedmetadata = () => resolve();
+        });
 
-  ctx.strokeText("TREINO PAGO",20,100);
-  ctx.fillText("TREINO PAGO",20,100);
+        img.style.display = "none";
+        video.style.display = "block";
+        saveBtn.disabled = true;
+        retryBtn.style.display = "none";
+        setStatus("Câmera ligada ✅ Agora clique em Tirar Foto.");
+      }catch(e){
+        console.log(e);
+        setStatus("❌ Não deu permissão. No iPhone: Ajustes > Safari > Câmera (Permitir).");
+        alert("Permita a câmera no Safari.");
+      }
+    }
 
-  ultimaImagem = canvas.toDataURL("image/png");
+    function drawWatermark(ctx, w, h){
+      const pad = Math.round(w * 0.03);
+      const fontSize = Math.max(22, Math.round(w * 0.06));
 
-  document.getElementById("msg").innerText="Foto pronta ✅ Clique em Baixar.";
-}
+      ctx.font = `900 ${fontSize}px system-ui, -apple-system, Arial`;
+      ctx.fillStyle = "rgba(255,255,255,0.92)";
+      ctx.strokeStyle = "rgba(0,0,0,0.40)";
+      ctx.lineWidth = Math.max(2, Math.round(fontSize * 0.10));
 
-function baixarFoto(){
-  if(!ultimaImagem){
-    alert("Tire a foto primeiro.");
-    return;
-  }
+      // 2 linhas: LP FIT TECH + TREINO PAGO
+      const t1 = "LP FIT TECH";
+      const t2 = "TREINO PAGO";
 
-  const a = document.createElement("a");
-  a.href = ultimaImagem;
-  a.download = "lp-fit-foto.png";
-  a.click();
-}
-</script>
+      const x = pad;
+      const y1 = pad + fontSize;
+      const y2 = y1 + Math.round(fontSize * 1.05);
 
+      ctx.strokeText(t1, x, y1);
+      ctx.fillText(t1, x, y1);
+
+      ctx.strokeText(t2, x, y2);
+      ctx.fillText(t2, x, y2);
+    }
+
+    async function takePhoto(){
+      try{
+        if (!stream || !video.srcObject){
+          setStatus("Abra a câmera primeiro.");
+          alert("Abra a câmera primeiro.");
+          return;
+        }
+
+        // Se no iPhone ainda estiver 0, não captura
+        if (video.videoWidth === 0 || video.videoHeight === 0){
+          setStatus("Aguarde 1 segundo e tente de novo (vídeo carregando).");
+          return;
+        }
+
+        const w = video.videoWidth;
+        const h = video.videoHeight;
+
+        canvas.width = w;
+        canvas.height = h;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(video, 0, 0, w, h);
+        drawWatermark(ctx, w, h);
+
+        // Converter pra Blob (melhor para iPhone)
+        lastBlob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png", 1.0));
+
+        // Mostrar preview
+        const url = URL.createObjectURL(lastBlob);
+        img.src = url;
+        img.style.display = "block";
+        video.style.display = "none";
+        saveBtn.disabled = false;
+        retryBtn.style.display = "block";
+
+        setStatus("Foto pronta ✅ Clique em Salvar / Compartilhar.");
+      }catch(e){
+        console.log(e);
+        setStatus("❌ Erro ao tirar foto.");
+        alert("Erro ao tirar foto.");
+      }
+    }
+
+    async function saveShare(){
+      if (!lastBlob){
+        alert("Tire a foto primeiro.");
+        return;
+      }
+
+      const file = new File([lastBlob], "lp-fit-foto.png", { type: "image/png" });
+
+      // iPhone: melhor forma de salvar é compartilhar -> Salvar Imagem
+      if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share){
+        try{
+          await navigator.share({
+            title: "Foto Fit",
+            text: "LP FIT TECH • TREINO PAGO",
+            files: [file]
+          });
+          setStatus("✅ Use 'Salvar Imagem' no menu de compartilhamento.");
+          return;
+        }catch(e){
+          // usuário cancelou, tudo bem
+          console.log(e);
+        }
+      }
+
+      // Fallback: abrir em nova aba (aí salva manualmente)
+      const url = URL.createObjectURL(lastBlob);
+      window.open(url, "_blank");
+      setStatus("Abrindo a imagem… (salve pela nova aba)");
+    }
+
+    function retry(){
+      // voltar pra câmera
+      img.style.display = "none";
+      video.style.display = "block";
+      saveBtn.disabled = true;
+      retryBtn.style.display = "none";
+      setStatus("Pronto. Clique em Tirar Foto.");
+    }
+
+    startBtn.addEventListener("click", startCamera);
+    takeBtn.addEventListener("click", takePhoto);
+    saveBtn.addEventListener("click", saveShare);
+    retryBtn.addEventListener("click", retry);
+  </script>
 </body>
 </html>
