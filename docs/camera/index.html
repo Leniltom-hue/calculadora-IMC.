@@ -207,28 +207,23 @@
     takeBtn.addEventListener("click", takePhoto);
     saveBtn.addEventListener("click", saveShare);
     retryBtn.addEventListener("click", retry);
-    function drawWatermark(ctx, w, h) {
+    // ===== Marca (imagem) =====
+const watermarkImg = new Image();
+watermarkImg.src = "./marca.png";
 
-  const watermark = new Image();
-  watermark.src = "marca.png";
+function drawWatermark(ctx, w, h){
 
-  watermark.onload = function () {
+  if (!watermarkImg.complete || watermarkImg.naturalWidth === 0){
+    console.log("Logo ainda não carregou");
+    return;
+  }
 
-    const marcaWidth = w * 0.5;
-    const marcaHeight = (watermark.height / watermark.width) * marcaWidth;
+  const marcaWidth = w * 0.5;
+  const marcaHeight = (watermarkImg.naturalHeight / watermarkImg.naturalWidth) * marcaWidth;
 
-    ctx.globalAlpha = 0.9;
-
-    ctx.drawImage(
-      watermark,
-      20,
-      20,
-      marcaWidth,
-      marcaHeight
-    );
-
-    ctx.globalAlpha = 1;
-  };
+  ctx.globalAlpha = 0.9;
+  ctx.drawImage(watermarkImg, 20, 20, marcaWidth, marcaHeight);
+  ctx.globalAlpha = 1;
 }
   </script>
 </body>
