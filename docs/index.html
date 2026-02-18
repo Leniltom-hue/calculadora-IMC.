@@ -1774,43 +1774,79 @@ function takePhoto() {
     alert("Abra a câmera primeiro.");
     return;
   }
+  // =========================
+// FOTO FIT (iPhone friendly)
+// =========================
+const cameraInput = document.getElementById("cameraInput");
+const openCameraBtn = document.getElementById("openCameraBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+const photoPreview = document.getElementById("photoPreview");
+const photoCanvas = document.getElementById("photoCanvas");
+const photoHint = document.getElementById("photoHint");
 
-  const w = cameraPreview.videoWidth;
-  const h = cameraPreview.videoHeight;
+let lastDataUrl = null;
 
-  photoCanvas.width = w;
-  photoCanvas.height = h;
+openCameraBtn?.addEventListener("click", () => {
+  // abre a câmera do iPhone
+  cameraInput.click();
+});
 
-  const ctx = photoCanvas.getContext("2d");
-  ctx.drawImage(cameraPreview, 0, 0, w, h);
+cameraInput?.addEventListener("change", async () => {
+  const file = cameraInput.files && cameraInput.files[0];
+  if (!file) return;
 
-  const image = photoCanvas.toDataURL("image/png");
-  const link = document.createElement("a");
-  link.href = image;
-  link.download = "lp-fit-foto.png";
-  link.click();
-}
+  // mostra preview
+  const url = URL.createObjectURL(file);
+  photoPreview.src = url;
+  photoPreview.style.display = "block";
+  photoHint.textContent = "Foto carregada ✅ Agora você pode baixar com marca d’água.";
+  downloadBtn.disabled = false;
 
-startCameraBtn.addEventListener("click", startCamera);
-takePhotoBtn.addEventListener("click", takePhoto);
-  </script>
-  <!-- ===== FOTO FIT LP ===== -->
-<section class="screen" id="screen-foto">
-  <div class="cards">
-    <section class="card">
-      <div class="cardTitle">📸 Foto Fit LP</div>
+  // desenha no canvas e aplica marca d'água
+  const img = new Image();
+  img.onload = () => {
+    const w = img.naturalWidth;
+    const h = img.naturalHeight;
 
-      <video id="cameraPreview" autoplay playsinline style="width:100%; border-radius:12px;"></video>
+    photoCanvas.width = w;
+    photoCanvas.height = h;
 
-      <div style="margin-top:10px;">
-        <button class="btn" id="startCamera" type="button">Abrir Câmera</button>
-        <button class="btn secondary" id="takePhoto" type="button">Tirar Foto</button>
-      </div>
+    const ctx = photoCanvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, w, h);
 
-      <canvas id="photoCanvas" style="display:none;"></canvas>
-    </section>
-  </div>
-</section>
+    // marca d'água
+    const pad = Math.round(w * 0.03);
+    const fontSize = Math.max(22, Math.round(w * 0.05));
+    ctx.font = `900 ${fontSize}px system-ui, -apple-system, Arial`;
+    ctx.fillStyle = "rgba(255,255,255,0.92)";
+    ctx.strokeStyle = "rgba(0,0,0,0.35)";
+    ctx.lineWidth = Math.max(2, Math.round(fontSize * 0.08));
+
+    const text = "LP FIT TECH";
+    const x = pad;
+    const y = pad + fontSize;
+
+    ctx.strokeText(text, x, y);
+    ctx.fillText(text, x, y);
+
+    lastDataUrl = photoCanvas.toDataURL("image/png");
+
+    // libera memória do preview temporário
+    URL.revokeObjectURL(url);
+  };
+  img.src = url;
+});
+
+downloadBtn?.addEventListener("click", () => {
+  if (!lastDataUrl) {
+    alert("Tire/seleciona uma foto primeiro.");
+    return;
+  }
+  const a = document.createElement("a");
+  a.href = lastDataUrl;
+  a.download = "lp-fit-foto.png";
+  a.click();
+});
 </script>
 </body>
 </html>
