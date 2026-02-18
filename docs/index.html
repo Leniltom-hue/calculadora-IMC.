@@ -279,7 +279,7 @@
       </div>
       <div class="navItem" data-screen="screen-foto">
   <div>📸 Foto Fit LP</div>
-  <small>Tirar foto + marca d’água</small>
+  <small>marca d’água</small>
 </div>
     </div>
 
@@ -1743,6 +1743,56 @@ takeBtn?.addEventListener("click", () => {
   link.download = "lp-fit-foto.png";
   link.click();
 });
+    // ===== FOTO FIT LP (CÂMERA) =====
+let camStream = null;
+
+const cameraPreview = document.getElementById("cameraPreview");
+const startCameraBtn = document.getElementById("startCamera");
+const takePhotoBtn = document.getElementById("takePhoto");
+const photoCanvas = document.getElementById("photoCanvas");
+
+async function startCamera() {
+  try {
+    const constraints = {
+      video: { facingMode: { ideal: "environment" } },
+      audio: false
+    };
+
+    camStream = await navigator.mediaDevices.getUserMedia(constraints);
+    cameraPreview.srcObject = camStream;
+    cameraPreview.setAttribute("playsinline", true);
+    await cameraPreview.play();
+
+  } catch (err) {
+    alert("Permita a câmera no Safari.");
+    console.log(err);
+  }
+}
+
+function takePhoto() {
+  if (!camStream) {
+    alert("Abra a câmera primeiro.");
+    return;
+  }
+
+  const w = cameraPreview.videoWidth;
+  const h = cameraPreview.videoHeight;
+
+  photoCanvas.width = w;
+  photoCanvas.height = h;
+
+  const ctx = photoCanvas.getContext("2d");
+  ctx.drawImage(cameraPreview, 0, 0, w, h);
+
+  const image = photoCanvas.toDataURL("image/png");
+  const link = document.createElement("a");
+  link.href = image;
+  link.download = "lp-fit-foto.png";
+  link.click();
+}
+
+startCameraBtn.addEventListener("click", startCamera);
+takePhotoBtn.addEventListener("click", takePhoto);
   </script>
   <!-- ===== FOTO FIT LP ===== -->
 <section class="screen" id="screen-foto">
