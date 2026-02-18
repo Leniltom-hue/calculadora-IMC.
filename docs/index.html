@@ -1811,50 +1811,6 @@ takePhotoBtn.addEventListener("click", takePhoto);
     </section>
   </div>
 </section>
-  <script>
-let stream;
-
-const btnStart = document.getElementById("startCamera");
-const btnPhoto = document.getElementById("takePhoto");
-const video = document.getElementById("cameraPreview");
-const canvas = document.getElementById("photoCanvas");
-
-btnStart.addEventListener("click", async () => {
-  try {
-    // pede a camera traseira (iPhone)
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: "environment" } },
-      audio: false
-    });
-
-    video.srcObject = stream;
-    await video.play();
-    alert("✅ Câmera ligada!");
-  } catch (e) {
-    alert("❌ Não deu permissão/erro: " + e.message);
-  }
-});
-
-btnPhoto.addEventListener("click", () => {
-  if (!stream) {
-    alert("Abra a câmera primeiro.");
-    return;
-  }
-
-  canvas.style.display = "block";
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-
-  const ctx = canvas.getContext("2d");
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-  // baixa a foto
-  const img = canvas.toDataURL("image/png");
-  const link = document.createElement("a");
-  link.href = img;
-  link.download = "lp-fit-foto.png";
-  link.click();
-});
 </script>
 </body>
 </html>
