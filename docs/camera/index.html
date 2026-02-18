@@ -207,6 +207,29 @@
     takeBtn.addEventListener("click", takePhoto);
     saveBtn.addEventListener("click", saveShare);
     retryBtn.addEventListener("click", retry);
+    function drawWatermark(ctx, w, h) {
+
+  const watermark = new Image();
+  watermark.src = "marca.png";
+
+  watermark.onload = function () {
+
+    const marcaWidth = w * 0.5;
+    const marcaHeight = (watermark.height / watermark.width) * marcaWidth;
+
+    ctx.globalAlpha = 0.9;
+
+    ctx.drawImage(
+      watermark,
+      20,
+      20,
+      marcaWidth,
+      marcaHeight
+    );
+
+    ctx.globalAlpha = 1;
+  };
+}
   </script>
 </body>
 </html>
