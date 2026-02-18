@@ -175,7 +175,70 @@
     }
     .footerLinks a{color:var(--primary); text-decoration:none; font-weight:800}
     .footerLinks a:hover{text-decoration:underline}
-  </style>
+  /* ===== BOTÃO FLUTUANTE: CÂMERA (LP FIT TECH) ===== */
+.fabCam{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  width:58px;
+  height:58px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.25);
+  background: linear-gradient(135deg, var(--primary), rgba(11,92,255,.65));
+  box-shadow: 0 16px 35px rgba(2,6,23,.25);
+  color:#fff;
+  font-size:24px;
+  font-weight:900;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  z-index:10000;
+}
+.fabCam:active{ transform: translateY(1px); }
+
+/* Modal da câmera */
+.camOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:10001;
+  padding:14px;
+}
+.camModal{
+  width:min(560px, 100%);
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.35);
+  overflow:hidden;
+}
+.camTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:12px 14px;
+  border-bottom:1px solid var(--border);
+}
+.camTop b{ font-weight:950; }
+.camBody{ padding:12px 14px; }
+.camVideo{
+  width:100%;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:#000;
+}
+.camActions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.camMini{ font-size:12px; color:var(--muted); margin-top:10px; }
+    </style>
 </head>
 
 <body>
@@ -214,6 +277,10 @@
         <div>🎯 Metas</div>
         <small>água, peso, macros</small>
       </div>
+      <div class="navItem" data-screen="screen-foto">
+  <div>📸 Foto Fit LP</div>
+  <small>Tirar foto + marca d’água</small>
+</div>
     </div>
 
     <div style="padding:14px; margin-top:auto; border-top:1px solid var(--border);" class="mini">
@@ -1635,6 +1702,64 @@
       };
       document.getElementById("closeBtn").onclick = () => toast.remove();
     }
+    // ===== FOTO FIT LP =====
+const video = document.getElementById("cameraPreview");
+const canvas = document.getElementById("photoCanvas");
+const startBtn = document.getElementById("startCamera");
+const takeBtn = document.getElementById("takePhoto");
+
+let stream;
+
+startBtn?.addEventListener("click", async () => {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = stream;
+  } catch (err) {
+    alert("Erro ao acessar câmera.");
+  }
+});
+
+takeBtn?.addEventListener("click", () => {
+  if (!video.srcObject) {
+    alert("Abra a câmera primeiro.");
+    return;
+  }
+
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(video, 0, 0);
+
+  // Marca d'água
+  ctx.font = "bold 30px Arial";
+  ctx.fillStyle = "white";
+  ctx.fillText("LP FIT TECH", 20, 40);
+
+  const image = canvas.toDataURL("image/png");
+
+  const link = document.createElement("a");
+  link.href = image;
+  link.download = "lp-fit-foto.png";
+  link.click();
+});
   </script>
+  <!-- ===== FOTO FIT LP ===== -->
+<section class="screen" id="screen-foto">
+  <div class="cards">
+    <section class="card">
+      <div class="cardTitle">📸 Foto Fit LP</div>
+
+      <video id="cameraPreview" autoplay playsinline style="width:100%; border-radius:12px;"></video>
+
+      <div style="margin-top:10px;">
+        <button class="btn" id="startCamera">Abrir Câmera</button>
+        <button class="btn secondary" id="takePhoto">Tirar Foto</button>
+      </div>
+
+      <canvas id="photoCanvas" style="display:none;"></canvas>
+    </section>
+  </div>
+</section>
 </body>
 </html>
