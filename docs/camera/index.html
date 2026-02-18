@@ -1,33 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LP FIT TECH - Câmera</title>
 
-
+<style>
+body{
+  margin:0;
+  background:#111827;
+  color:white;
+  font-family:system-ui;
+  padding:20px;
+}
+.card{
+  max-width:600px;
+  margin:auto;
+}
+video,canvas{
+  width:100%;
+  border-radius:12px;
+  background:black;
+}
+button{
+  margin-top:10px;
+  padding:12px;
+  width:100%;
+  border:none;
+  border-radius:12px;
+  font-weight:900;
+  font-size:16px;
+  cursor:pointer;
+}
+.primary{background:#2563eb;color:white;}
+.secondary{background:#374151;color:white;}
+</style>
 </head>
+
 <body>
 
-<div class="container">
-
+<div class="card">
 <h2>📸 FOTO FIT</h2>
 
-<video id="video" autoplay playsinline></video>
+<video id="video" playsinline autoplay></video>
+<canvas id="canvas" style="display:none;"></canvas>
 
-<button class="primary" onclick="startCamera()">Abrir Câmera</button>
-<
-let stream;
+<button class="primary" onclick="abrirCamera()">Abrir Câmera</button>
+<button class="primary" onclick="tirarFoto()">Tirar Foto</button>
+<button class="secondary" onclick="baixarFoto()">Baixar</button>
 
-async function startCamera(){
+<p id="msg"></p>
+</div>
+
+<script>
+let stream = null;
+let ultimaImagem = null;
+
+async function abrirCamera(){
   try{
     stream = await navigator.mediaDevices.getUserMedia({
-      video:{ facingMode:"environment" },
+      video:{facingMode:{ideal:"environment"}},
       audio:false
     });
-
-    document.getElementById("video").srcObject = stream;
-
-  }catch(err){
-    alert("Permita a câmera no navegador.");
+    const video = document.getElementById("video");
+    video.srcObject = stream;
+    await video.play();
+    document.getElementById("msg").innerText="Câmera ligada ✅";
+  }catch(e){
+    alert("Permita a câmera no Safari.");
   }
 }
 
-function takePhoto(){
+function tirarFoto(){
   const video = document.getElementById("video");
   const canvas = document.getElementById("canvas");
 
@@ -36,9 +80,44 @@ function takePhoto(){
     return;
   }
 
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
+  const w = video.videoWidth;
+  const h = video.videoHeight;
+
+  canvas.width = w;
+  canvas.height = h;
 
   const ctx = canvas.getContext("2d");
-  ctx.drawImage(video,0,0);
+  ctx.drawImage(video,0,0,w,h);
 
+  // MARCA D'ÁGUA
+  ctx.font="bold 40px Arial";
+  ctx.fillStyle="white";
+  ctx.strokeStyle="black";
+  ctx.lineWidth=3;
+
+  ctx.strokeText("LP FIT TECH",20,50);
+  ctx.fillText("LP FIT TECH",20,50);
+
+  ctx.strokeText("TREINO PAGO",20,100);
+  ctx.fillText("TREINO PAGO",20,100);
+
+  ultimaImagem = canvas.toDataURL("image/png");
+
+  document.getElementById("msg").innerText="Foto pronta ✅ Clique em Baixar.";
+}
+
+function baixarFoto(){
+  if(!ultimaImagem){
+    alert("Tire a foto primeiro.");
+    return;
+  }
+
+  const a = document.createElement("a");
+  a.href = ultimaImagem;
+  a.download = "lp-fit-foto.png";
+  a.click();
+}
+</script>
+
+</body>
+</html>
