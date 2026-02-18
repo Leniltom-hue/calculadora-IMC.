@@ -1794,5 +1794,22 @@ function takePhoto() {
 startCameraBtn.addEventListener("click", startCamera);
 takePhotoBtn.addEventListener("click", takePhoto);
   </script>
+  <!-- ===== FOTO FIT LP ===== -->
+<section class="screen" id="screen-foto">
+  <div class="cards">
+    <section class="card">
+      <div class="cardTitle">📸 Foto Fit LP</div>
+
+      <video id="cameraPreview" autoplay playsinline style="width:100%; border-radius:12px;"></video>
+
+      <div style="margin-top:10px;">
+        <button class="btn" id="startCamera" type="button">Abrir Câmera</button>
+        <button class="btn secondary" id="takePhoto" type="button">Tirar Foto</button>
+      </div>
+
+      <canvas id="photoCanvas" style="display:none;"></canvas>
+    </section>
+  </div>
+</section>
 </body>
 </html>
