@@ -1,63 +1,5 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LP FIT TECH - Câmera</title>
 
-<style>
-body{
-  margin:0;
-  font-family:system-ui,-apple-system;
-  background:#0f172a;
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:100vh;
-  flex-direction:column;
-  padding:20px;
-}
 
-.container{
-  width:100%;
-  max-width:500px;
-}
-
-video{
-  width:100%;
-  border-radius:20px;
-  background:black;
-}
-
-button{
-  width:100%;
-  padding:14px;
-  margin-top:10px;
-  border:none;
-  border-radius:14px;
-  font-weight:900;
-  font-size:16px;
-  cursor:pointer;
-}
-
-.primary{
-  background:#0b5cff;
-  color:white;
-}
-
-.secondary{
-  background:white;
-  color:#0b5cff;
-}
-
-.footer{
-  margin-top:20px;
-  font-size:14px;
-  text-align:center;
-  opacity:.8;
-}
-</style>
 </head>
 <body>
 
@@ -68,17 +10,7 @@ button{
 <video id="video" autoplay playsinline></video>
 
 <button class="primary" onclick="startCamera()">Abrir Câmera</button>
-<button class="secondary" onclick="takePhoto()">Tirar Foto</button>
-
-<canvas id="canvas" style="display:none;"></canvas>
-
-<div class="footer">
-LP FIT TECH • Treino Pago 💪
-</div>
-
-</div>
-
-<script>
+<
 let stream;
 
 async function startCamera(){
@@ -110,20 +42,3 @@ function takePhoto(){
   const ctx = canvas.getContext("2d");
   ctx.drawImage(video,0,0);
 
-  // Marca d'água
-  ctx.font = "bold 40px Arial";
-  ctx.fillStyle = "white";
-  ctx.fillText("LP FIT TECH", 30, 60);
-  ctx.fillText("TREINO PAGO 💪", 30, 110);
-
-  const image = canvas.toDataURL("image/png");
-
-  const link = document.createElement("a");
-  link.href = image;
-  link.download = "lp-fit-foto.png";
-  link.click();
-}
-</script>
-
-</body>
-</html>
