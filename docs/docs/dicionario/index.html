@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Dicionário de Treinos • LP Fit Tech</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <div class="logo">LP</div>
+      <div>
+        <div class="title">Dicionário de Treinos</div>
+        <div class="sub">Exercícios • Como fazer • Para que serve</div>
+      </div>
+    </div>
+
+    <button id="proBtn" class="chip" type="button">🔒 PRO</button>
+  </header>
+
+  <main class="wrap">
+    <section class="searchBox">
+      <input id="q" placeholder="Pesquisar exercício (ex: supino, agachamento)..." />
+      <select id="grupo">
+        <option value="">Todos grupos</option>
+        <option value="Peito">Peito</option>
+        <option value="Costas">Costas</option>
+        <option value="Pernas">Pernas</option>
+        <option value="Ombro">Ombro</option>
+        <option value="Bíceps">Bíceps</option>
+        <option value="Tríceps">Tríceps</option>
+        <option value="Abdômen">Abdômen</option>
+        <option value="Glúteo">Glúteo</option>
+      </select>
+    </section>
+
+    <section class="grid" id="list"></section>
+
+    <section class="modal" id="modal" aria-hidden="true">
+      <div class="modalCard">
+        <div class="modalTop">
+          <div>
+            <div class="mTitle" id="mTitle">—</div>
+            <div class="mSub" id="mSub">—</div>
+          </div>
+          <button class="x" id="closeModal" type="button">✕</button>
+        </div>
+
+        <div class="sep"></div>
+
+        <div class="blocks">
+          <div class="block">
+            <div class="bTitle">✅ Para que serve</div>
+            <div class="bText" id="mServe">—</div>
+          </div>
+
+          <div class="block">
+            <div class="bTitle">🎯 Músculos trabalhados</div>
+            <div class="bText" id="mMusculos">—</div>
+          </div>
+
+          <div class="block">
+            <div class="bTitle">📌 Como fazer</div>
+            <ol class="bList" id="mComo"></ol>
+          </div>
+
+          <div class="block">
+            <div class="bTitle">⚠️ Erros comuns</div>
+            <ul class="bList" id="mErros"></ul>
+          </div>
+
+          <div class="proBox" id="proBox" style="display:none;">
+            <div class="proTitle">🔒 Conteúdo PRO (Treino Pago)</div>
+            <div class="proText" id="mPro">—</div>
+            <button id="unlockHint" class="btn" type="button">Quero o PRO</button>
+          </div>
+
+          <div class="actions">
+            <button class="btn ghost" id="copyBtn" type="button">Copiar resumo</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./data.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
