@@ -82,177 +82,106 @@ window.EXS = [
     erros:["Arquear lombar","Empurrar pra frente"],
     pro:"Técnica PRO + variações (halter, smith) + periodização."
   },
+  // NOVOS (FREE)
   {
-  nome: "Supino inclinado com halteres",
-  grupo: "Peito",
-  paraQueServe: "Trabalha a parte superior do peitoral.",
-  comoFazer: [
-    "Deite no banco inclinado.",
-    "Segure os halteres na altura do peito.",
-    "Empurre para cima até estender os braços.",
-    "Desça controlando."
-  ],
-  dicas: [
-    "Não arqueie demais a lombar.",
-    "Controle a descida."
-  ],
-  errosComuns: [
-    "Descer muito rápido.",
-    "Bater os halteres no topo."
-  ]
-},
-
-{
-  nome: "Barra fixa",
-  grupo: "Costas",
-  paraQueServe: "Fortalece dorsais, bíceps e core.",
-  comoFazer: [
-    "Segure a barra com pegada aberta.",
-    "Puxe o corpo até o queixo passar da barra.",
-    "Desça devagar."
-  ],
-  dicas: [
-    "Evite balançar o corpo.",
-    "Contraia as escápulas."
-  ],
-  errosComuns: [
-    "Usar impulso.",
-    "Não completar o movimento."
-  ]
-},
-
-{
-  nome: "Agachamento livre",
-  grupo: "Pernas",
-  paraQueServe: "Fortalece quadríceps, glúteos e posterior.",
-  comoFazer: [
-    "Pés na largura dos ombros.",
-    "Desça flexionando os joelhos.",
-    "Mantenha o peito erguido.",
-    "Suba empurrando o chão."
-  ],
-  dicas: [
-    "Joelhos alinhados com os pés.",
-    "Desça até pelo menos 90°."
-  ],
-  errosComuns: [
-    "Deixar joelho fechar.",
-    "Curvar a lombar."
-  ]
-},
-
-{
-  nome: "Stiff",
-  grupo: "Posterior",
-  paraQueServe: "Trabalha posterior de coxa e glúteos.",
-  comoFazer: [
-    "Segure a barra à frente.",
-    "Desça mantendo as pernas quase estendidas.",
-    "Suba contraindo glúteos."
-  ],
-  dicas: [
-    "Coluna sempre neutra.",
-    "Movimento controlado."
-  ],
-  errosComuns: [
-    "Curvar as costas.",
-    "Descer além da mobilidade."
-  ]
-},
-
-{
-  nome: "Elevação lateral",
-  grupo: "Ombro",
-  paraQueServe: "Desenvolve o deltoide lateral.",
-  comoFazer: [
-    "Segure halteres ao lado do corpo.",
-    "Eleve até a altura dos ombros.",
-    "Desça devagar."
-  ],
-  dicas: [
-    "Leve inclinação do tronco.",
-    "Controle total do peso."
-  ],
-  errosComuns: [
-    "Subir acima da linha do ombro.",
-    "Usar impulso."
-  ]
-},
-
-{
-  nome: "Rosca direta",
-  grupo: "Bíceps",
-  paraQueServe: "Desenvolve o bíceps braquial.",
-  comoFazer: [
-    "Segure a barra com pegada supinada.",
-    "Flexione os cotovelos.",
-    "Desça controlando."
-  ],
-  dicas: [
-    "Não balance o corpo.",
-    "Mantenha os cotovelos fixos."
-  ],
-  errosComuns: [
-    "Usar impulso.",
-    "Abrir os cotovelos."
-  ]
-},
-
-{
-  nome: "Tríceps corda",
-  grupo: "Tríceps",
-  paraQueServe: "Fortalece a parte posterior do braço.",
-  comoFazer: [
-    "Segure a corda na polia.",
-    "Empurre para baixo estendendo os braços.",
-    "Retorne devagar."
-  ],
-  dicas: [
-    "Cotovelos colados ao corpo.",
-    "Separe a corda no final."
-  ],
-  errosComuns: [
-    "Mover o ombro.",
-    "Deixar cotovelo abrir."
-  ]
-},
-
-{
-  nome: "Abdominal infra",
-  grupo: "Abdômen",
-  paraQueServe: "Trabalha a parte inferior do abdômen.",
-  comoFazer: [
-    "Deite no chão.",
-    "Eleve as pernas estendidas.",
-    "Desça devagar."
-  ],
-  dicas: [
-    "Lombar sempre apoiada.",
-    "Controle o movimento."
-  ],
-  errosComuns: [
-    "Balançar as pernas.",
-    "Tirar lombar do chão."
-  ]
-},
-
-{
-  nome: "Hip thrust",
-  grupo: "Glúteo",
-  paraQueServe: "Fortalece principalmente os glúteos.",
-  comoFazer: [
-    "Apoie as costas no banco.",
-    "Barra sobre o quadril.",
-    "Eleve o quadril até alinhar com o tronco.",
-    "Desça controlando."
-  ],
-  dicas: [
-    "Contraia forte no topo.",
-    "Pés alinhados."
-  ],
-  errosComuns: [
-    "Não estender totalmente.",
-    "Abrir demais os joelhos."
-  ]
-}
+    id:"supino_inclinado_halteres",
+    nome:"Supino inclinado com halteres",
+    grupo:"Peito",
+    nivel:"Intermediário",
+    free:true,
+    serve:"Trabalha a parte superior do peitoral com mais estabilidade e amplitude.",
+    musculos:"Peitoral superior, deltoide anterior, tríceps.",
+    como:[
+      "Deite no banco inclinado e firme os pés no chão.",
+      "Comece com halteres na linha do peito.",
+      "Empurre para cima sem bater os halteres.",
+      "Desça controlando até sentir alongar o peitoral."
+    ],
+    erros:["Descer rápido demais","Arquear muito a lombar","Bater halteres no topo"],
+    pro:"PRO: inclinação ideal + progressão de cargas + variações (pegada neutra, tempo)."
+  },
+  {
+    id:"barra_fixa",
+    nome:"Barra fixa",
+    grupo:"Costas",
+    nivel:"Intermediário",
+    free:true,
+    serve:"Fortalece dorsais, bíceps e melhora postura.",
+    musculos:"Dorsal, bíceps, romboides, core.",
+    como:[
+      "Pegue a barra (aberta ou neutra).",
+      "Trave o core e puxe até o queixo passar a barra.",
+      "Desça devagar controlando.",
+      "Evite balançar o corpo."
+    ],
+    erros:["Usar impulso/balanço","Encolher ombros","Não completar amplitude"],
+    pro:"PRO: progressão (elástico/negativas) + variações + volume semanal ideal."
+  },
+  {
+    id:"elevacao_lateral",
+    nome:"Elevação lateral",
+    grupo:"Ombro",
+    nivel:"Iniciante",
+    free:true,
+    serve:"Dá largura ao ombro (deltoide lateral).",
+    musculos:"Deltoide lateral, trapézio estabilizador.",
+    como:[
+      "Halteres ao lado do corpo, cotovelo levemente flexionado.",
+      "Eleve até a altura do ombro (sem passar muito).",
+      "Pausa curta em cima.",
+      "Desça devagar."
+    ],
+    erros:["Usar impulso","Subir acima do ombro","Encolher ombros"],
+    pro:"PRO: técnica (plano escapular) + séries/semana + drop-set seguro."
+  },
+  {
+    id:"triceps_corda",
+    nome:"Tríceps corda",
+    grupo:"Tríceps",
+    nivel:"Iniciante",
+    free:true,
+    serve:"Fortalece a parte de trás do braço (tríceps).",
+    musculos:"Tríceps (todas as cabeças).",
+    como:[
+      "Cotovelos colados ao corpo na polia.",
+      "Empurre a corda para baixo estendendo os braços.",
+      "No final, separe levemente a corda.",
+      "Volte controlando sem deixar cotovelo abrir."
+    ],
+    erros:["Mexer o ombro","Abrir cotovelos","Usar carga e roubar"],
+    pro:"PRO: ajustes de pegada + volume + variações (barra V, unilateral)."
+  },
+  {
+    id:"abdominal_infra",
+    nome:"Abdominal infra",
+    grupo:"Abdômen",
+    nivel:"Iniciante",
+    free:true,
+    serve:"Foco em abdômen inferior e controle do core.",
+    musculos:"Reto abdominal, iliopsoas (controle), core.",
+    como:[
+      "Deite e mantenha lombar colada no chão.",
+      "Eleve pernas (ou joelhos) sem embalar.",
+      "Desça devagar sem perder a lombar no chão."
+    ],
+    erros:["Tirar a lombar do chão","Balançar as pernas","Descer sem controle"],
+    pro:"PRO: progressão (dobrado -> estendido) + tempo + séries seguras."
+  },
+  {
+    id:"hip_thrust",
+    nome:"Hip thrust",
+    grupo:"Glúteo",
+    nivel:"Intermediário",
+    free:true,
+    serve:"Um dos melhores para glúteos e força do quadril.",
+    musculos:"Glúteo máximo, posterior de coxa, core.",
+    como:[
+      "Costas apoiadas no banco, barra no quadril (com proteção).",
+      "Suba o quadril até alinhar tronco e coxa.",
+      "Contraia forte no topo 1s.",
+      "Desça controlando."
+    ],
+    erros:["Não estender totalmente","Abrir demais joelhos","Jogar a lombar"],
+    pro:"PRO: posição dos pés + cadência + progressão de carga e reps."
+  },
 ];
