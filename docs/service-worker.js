@@ -1,5 +1,5 @@
 // Troque o número quando quiser forçar atualização imediata
-const CACHE_VERSION = "v7";
+const CACHE_VERSION = "v8";
 const CACHE_NAME = `imc-cache-${CACHE_VERSION}`;
 
 const ASSETS = [
